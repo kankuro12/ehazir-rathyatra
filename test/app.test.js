@@ -66,9 +66,11 @@ test('alerts: validation, message sends on save, place fires on entry per repeat
   assert.strictEqual((await post({ title: 'x', trigger: 'place', lat: 27, lng: 83, radius_m: 10 })).status, 400); // radius too small
   assert.strictEqual((await post({ title: 'x', trigger: 'now', image: 'javascript:alert(1)' })).status, 400);
 
-  assert.strictEqual(alerts.subscribe({ endpoint: 'https://push.example/1', keys: { p256dh: 'p', auth: 'a' } }), true);
-  assert.strictEqual(alerts.subscribe({ endpoint: 'http://insecure', keys: { p256dh: 'p', auth: 'a' } }), false);
-
+  const keys = { p256dh: 'p', auth: 'a' };
+  assert.strictEqual(alerts.subscribe({ endpoint: 'https://fcm.googleapis.com/fcm/send/abc', keys }), true);
+  for (const bad of ['http://fcm.googleapis.com/x', 'https://push.example/1', 'https://10.0.0.5/admin', 'https://fcm.googleapis.com.evil.com/x',
+    'https://evil.com/fcm.googleapis.com', 'https://fcm.googleapis.com:8443/x', 'https://u:p@fcm.googleapis.com/x'])
+    assert.strictEqual(alerts.subscribe({ endpoint: bad, keys }), false, bad);
   assert.strictEqual((await post({ title: 'Welcome', trigger: 'now', show_as: 'card', push: true })).status, 201);
   assert.strictEqual(fired.at(-1).title, 'Welcome');
   await until(() => pushed.length === 1);

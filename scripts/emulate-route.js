@@ -18,7 +18,7 @@ function frame(lat, lon, kn, course) {
 }
 const bearing = (a, b) => (Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI + 360) % 360;
 
-// Real road geometry per leg from the public OSRM demo router (same as tracaar_clone/emulate).
+// Real road geometry per leg from the public OSRM demo router (open-source routing, no key needed).
 async function road(a, b) {
   const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=full&geometries=geojson`);
   const d = await r.json();

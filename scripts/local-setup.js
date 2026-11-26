@@ -1,6 +1,6 @@
 // Local testing only: on a local MargaTrack (default http://localhost:3000) registers a "Rath (test)" vehicle
 // in the demo tenant and an integration key, then writes rathyatra/.env.
-// Usage: node scripts/local-setup.js <path-to-tracaar_clone/.env> [googleMapsKey]
+// Usage: node scripts/local-setup.js <path-to-your-local-MargaTrack/.env> [googleMapsKey]
 const fs = require('node:fs');
 const path = require('node:path');
 const mt = require('dotenv').parse(fs.readFileSync(process.argv[2]));

@@ -84,7 +84,7 @@
   @keyframes fade{from{opacity:0}} @keyframes rise{from{transform:translateY(30px) scale(.96);opacity:0}}
   .notice{border-left:3px solid var(--saffron)} .notice h3{margin:0 0 6px;font-size:1rem;color:var(--deep)} .notice p{margin:0;white-space:pre-line;font-size:.9rem;line-height:1.6}
   .notice img{width:100%;border-radius:12px;margin-top:8px}
-  @media (min-width:901px){ .fab{right:424px;bottom:24px} }
+  @media (min-width:901px){ .fab{right:424px;bottom:24px} .fab.zoom{bottom:82px} }
   /* phones: bottom sheet that peeks, tap/drag handle to expand */
   @media (max-width:900px){
     .top{right:10px;padding:6px 12px 6px 6px} .top h1{font-size:.88rem} .top small{display:none}
@@ -102,6 +102,7 @@
     .top{top:max(8px,env(safe-area-inset-top));left:8px;right:auto;max-width:calc(100% - 16px);gap:7px;padding:4px 10px 4px 4px}
     .logo{width:26px;height:26px;font-size:14px} .top h1{font-size:.78rem} .live{font-size:.65rem;gap:4px} .dot{width:7px;height:7px}
     .fab{right:8px;gap:6px;bottom:calc(var(--peek) + 10px)}
+    .fab.zoom{right:auto;left:8px;bottom:calc(var(--peek) + 44px)} /* bottom-left, above the MargaTrack chip */
     .fab button{width:36px;height:36px;border-radius:11px;font-size:16px}
     .fab .focus{padding:0 10px;font-size:.74rem;gap:4px}
     .pwr{left:8px;padding:4px 9px 4px 4px;gap:5px;font-size:.66rem}
@@ -168,12 +169,12 @@
     <img id="popImg" alt="" hidden><div class="bd" id="popBody"></div>
     <div class="ft"><button class="chip" id="popMap">🎯 Show Rath</button><button class="chip solid" id="popOk">OK</button></div></div>
 </div>
-<div class="fab" id="fab">
+<div class="fab zoom">
   <button type="button" id="zin" aria-label="Zoom in">+</button>
   <button type="button" id="zout" aria-label="Zoom out">−</button>
   <button type="button" id="fit" aria-label="Show whole route">⤢</button>
-  <button type="button" class="focus" id="focus" aria-label="Focus on Rath">🎯 <span>Rath</span></button>
 </div>
+<div class="fab go"><button type="button" class="focus" id="focus" aria-label="Focus on Rath">🎯 <span>Rath</span></button></div>
 
 <script>
 const $ = (id) => document.getElementById(id);
@@ -381,7 +382,8 @@ window.initMap = async () => {
   if (last) showFix(last);
 };
 // keep pins clear of the floating bar and the sheet/sidebar
-const pad = () => mobile.matches ? { top: 50, bottom: 190, left: 16, right: 52 } : { top: 90, bottom: 30, left: 30, right: 440 };
+// scaled to the screen height so short phones don't zoom out to the whole continent
+const pad = () => mobile.matches ? { top: 46, bottom: Math.min(190, innerHeight * .34), left: 52, right: 52 } : { top: 90, bottom: 30, left: 30, right: 440 };
 
 (async () => {
   const [cfg, st] = await Promise.all([fetch('/api/config').then((r) => r.json()), fetch('/api/stops').then((r) => r.json())]);

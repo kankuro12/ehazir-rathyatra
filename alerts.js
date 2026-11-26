@@ -6,6 +6,16 @@ const { distM } = require('./db');
 const FIELDS = ['title', 'body', 'image', 'show_as', 'trigger', 'at', 'lat', 'lng', 'radius_m', 'repeat', 'push', 'active_from', 'active_until', 'enabled'];
 const POPUP_DEFAULT_MS = 2 * 3600 * 1000; // a fired popup with no end time stays visible to new viewers for 2 h
 
+// Subscriptions may only point at the browsers' real push services, so the server can never be
+// made to POST to an arbitrary or internal https address (SSRF).
+const PUSH_HOSTS = [/^fcm\.googleapis\.com$/, /^([a-z0-9-]+\.)*push\.services\.mozilla\.com$/, /^web\.push\.apple\.com$/, /^([a-z0-9-]+\.)*notify\.windows\.com$/];
+function isPushService(endpoint) {
+  try {
+    const u = new URL(endpoint);
+    return u.protocol === 'https:' && !u.port && !u.username && !u.password && PUSH_HOSTS.some((re) => re.test(u.hostname));
+  } catch { return false; }
+}
+
 const iso = (v) => (v ? new Date(v).toISOString() : null);
 const npDate = (d) => new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Kathmandu' });
 
@@ -86,7 +96,7 @@ function createAlerts(db, { onFire = () => {}, env = process.env, sendPush = web
     });
   }
   function subscribe(sub) {
-    if (!sub || typeof sub.endpoint !== 'string' || !/^https:\/\//.test(sub.endpoint) || sub.endpoint.length > 1000
+    if (!sub || typeof sub.endpoint !== 'string' || !isPushService(sub.endpoint) || sub.endpoint.length > 1000
       || typeof sub.keys?.p256dh !== 'string' || typeof sub.keys?.auth !== 'string') return false;
     const s = JSON.stringify({ endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh.slice(0, 200), auth: sub.keys.auth.slice(0, 100) } });
     db.prepare('INSERT INTO push_subs (endpoint, sub, created) VALUES (?,?,?) ON CONFLICT(endpoint) DO UPDATE SET sub=excluded.sub').run(sub.endpoint, s, new Date().toISOString());
