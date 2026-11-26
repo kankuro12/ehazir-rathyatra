@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# secrets — copy .env.example to .env or run: node setup.js
+.env
+.env.*
+!.env.example
+*.tmp
+
+# SQLite data (admins, sessions, push keys, GPS trail)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# logs / OS / editor
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/settings.local.json

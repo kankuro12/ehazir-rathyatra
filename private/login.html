@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin login – Rath Yatra</title>
+<style>
+  *{box-sizing:border-box} body{margin:0;min-height:100dvh;display:grid;place-items:center;font-family:"Inter","Segoe UI",system-ui,sans-serif;
+    background:radial-gradient(circle at 20% 10%,#ffe2c4,transparent 50%),radial-gradient(circle at 90% 90%,#f7d3a8,transparent 45%),#fbf7f2;color:#2a1a0f}
+  form{width:min(92vw,360px);background:#fff;border-radius:24px;padding:28px;box-shadow:0 12px 40px #6b2a0a26}
+  .logo{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:24px;color:#fff;margin-bottom:12px;background:conic-gradient(from 200deg,#e0a82e,#ea6a12,#b4400f,#e0a82e)}
+  h1{margin:0 0 4px;font-size:1.25rem} p{margin:0 0 18px;color:#7b6a5c;font-size:.88rem}
+  label{display:block;font-size:.8rem;font-weight:600;margin:12px 0 6px}
+  input{width:100%;padding:12px 14px;border:1px solid #e6d9c8;border-radius:12px;font:inherit} input:focus{outline:2px solid #ea6a12;border-color:transparent}
+  button{width:100%;margin-top:18px;padding:12px;border:0;border-radius:12px;font:700 1rem inherit;font-family:inherit;color:#fff;cursor:pointer;background:linear-gradient(135deg,#ea6a12,#b4400f)}
+  button:disabled{opacity:.6} #err{color:#c0261b;font-size:.85rem;min-height:1.2em;margin-top:10px}
+</style>
+</head>
+<body>
+<form id="f" autocomplete="on">
+  <div class="logo" aria-hidden="true">ॐ</div>
+  <h1>Rath Yatra admin</h1><p>Sign in to manage the schedule and alerts.</p>
+  <label for="u">Username</label><input id="u" name="username" autocomplete="username" required maxlength="64" autofocus>
+  <label for="p">Password</label><input id="p" name="password" type="password" autocomplete="current-password" required maxlength="256">
+  <button id="b">Sign in</button>
+  <div id="err" role="alert"></div>
+</form>
+<script>
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const b = document.getElementById('b'), err = document.getElementById('err');
+  b.disabled = true; err.textContent = '';
+  try {
+    const r = await fetch('/api/login', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ username: document.getElementById('u').value, password: document.getElementById('p').value }) });
+    if (r.ok) return location.replace('/admin');
+    err.textContent = (await r.json().catch(() => ({}))).error || 'Sign in failed';
+  } catch { err.textContent = 'Network error'; }
+  b.disabled = false;
+};
+</script>
+</body>
+</html>

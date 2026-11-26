@@ -1,0 +1,21 @@
+{
+  "name": "rathyatra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test --test-force-exit test/app.test.js",
+    "admin:user": "node scripts/admin-user.js",
+    "setup": "node setup.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "web-push": "^4.0.0",
+    "ws": "^8.23.0"
+  }
+}

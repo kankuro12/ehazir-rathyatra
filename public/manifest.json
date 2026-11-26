@@ -1,0 +1,9 @@
+{
+  "name": "श्री सत्य साई प्रेम प्रवाहिनी रथ – Live",
+  "short_name": "Rath Live",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf7f2",
+  "theme_color": "#b4400f",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
